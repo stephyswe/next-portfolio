@@ -1,8 +1,8 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import { Inter } from "next/font/google"
 
 import { siteConfig } from "@/config/site"
-import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Analytics } from "@/components/analytics"
 import { ThemeProvider } from "@/components/providers"
@@ -12,6 +12,7 @@ import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { Toaster as DefaultToaster } from "@/registry/default/ui/toaster"
 import { Toaster as NewYorkToaster } from "@/registry/new-york/ui/toaster"
 
+const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
@@ -78,8 +79,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <head />
         <body
           className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
+            "prose min-h-screen bg-background antialiased",
+            inter.className
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

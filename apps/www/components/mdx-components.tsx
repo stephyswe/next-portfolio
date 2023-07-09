@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import Link, { LinkProps } from "next/link"
+import Link from "next/link"
 import { useMDXComponent } from "next-contentlayer/hooks"
 import { NpmCommands } from "types/unist"
 
@@ -37,7 +37,30 @@ import {
 } from "@/registry/new-york/ui/tabs"
 import { Style } from "@/registry/styles"
 
+// <iframe width="200" height="113" src="https://www.youtube.com/embed/dQw4w9WgXcQ?feature=oembed" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+
+const Iframe = ({ ...props }) => {
+  return (
+    <div>
+      <h3>commit: {props.commit} </h3>
+      <iframe
+        style={{
+          width: "100%",
+          height: 900,
+          outline: "1px solid #252525",
+          border: 0,
+          borderRadius: 8,
+          marginBottom: 16,
+          zIndex: 100,
+        }}
+        src={props.src}
+      />
+    </div>
+  )
+}
+
 const components = {
+  Iframe,
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -188,7 +211,7 @@ const components = {
       <StyleWrapper styleName={__style__}>
         <pre
           className={cn(
-            "mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900",
+            "mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg py-4 dark:bg-zinc-800",
             className
           )}
           {...props}
@@ -217,7 +240,7 @@ const components = {
   code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <code
       className={cn(
-        "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm",
+        "relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm",
         className
       )}
       {...props}

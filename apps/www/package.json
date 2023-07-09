@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3006",
     "build": "contentlayer build && pnpm build:registry && next build",
     "build:registry": "ts-node --esm --project ./tsconfig.scripts.json ./scripts/build-registry.ts",
     "seed:tasks": "ts-node --esm --project ./tsconfig.scripts.json ./app/examples/tasks/data/seed.ts",
@@ -84,7 +84,7 @@
     "postcss": "^8.4.24",
     "rehype": "^12.0.1",
     "rehype-autolink-headings": "^6.1.1",
-    "rehype-pretty-code": "^0.6.0",
+    "rehype-pretty-code": "^0.10.0",
     "rehype-slug": "^5.1.0",
     "remark": "^14.0.3",
     "remark-code-import": "^1.2.0",

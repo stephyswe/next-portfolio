@@ -1,4 +1,5 @@
 const { fontFamily } = require("tailwindcss/defaultTheme")
+const colors = require('tailwindcss/colors');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -69,6 +70,26 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      code: {
+        color: '#86e1fc',
+        '&::before': { content: `"" !important` },
+        '&::after': { content: `"" !important` },
+        fontWeight: 'normal',
+      },
+      '[data-rehype-pretty-code-fragment]:nth-of-type(2) pre': {
+        '[data-line]::before': {
+          content: 'counter(line)',
+          counterIncrement: 'line',
+          display: 'inline-block',
+          width: '1rem',
+          marginRight: '1rem',
+          textAlign: 'right',
+          color: colors.slate[600],
+        },
+        '[data-highlighted-line]::before': {
+          color: colors.slate[400],
+        },
       },
     },
   },

@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -58,6 +57,17 @@ export function MainNav() {
           )}
         >
           GitHub
+        </Link>
+        <Link
+          href="/blog"
+          className={cn(
+            "transition-colors hover:text-foreground/80",
+            pathname?.startsWith("/blog")
+              ? "text-foreground"
+              : "text-foreground/60"
+          )}
+        >
+          Blog
         </Link>
       </nav>
     </div>

@@ -10,7 +10,6 @@ import rehypePrettyCode from "rehype-pretty-code"
 import rehypeSlug from "rehype-slug"
 import { codeImport } from "remark-code-import"
 import remarkGfm from "remark-gfm"
-import { getHighlighter, loadTheme } from "shiki"
 import { visit } from "unist-util-visit"
 
 import { rehypeComponent } from "./lib/rehype-component"
@@ -38,6 +37,47 @@ const RadixProperties = defineNestedType(() => ({
       type: "string",
     },
   },
+}))
+
+export const Blog = defineDocumentType(() => ({
+  name: "Blog",
+  filePathPattern: `blog/**/*.mdx`,
+  contentType: "mdx",
+  fields: {
+    category: {
+      type: "string",
+      required: false,
+    },
+    title: {
+      type: "string",
+      required: true,
+    },
+    description: {
+      type: "string",
+    },
+    date: {
+      type: "date",
+      required: true,
+    },
+    published: {
+      type: "boolean",
+      default: true,
+    },
+    image: {
+      type: "string",
+      required: true,
+    },
+    authors: {
+      // Reference types are not embedded.
+      // Until this is fixed, we can use a simple list.
+      // type: "reference",
+      // of: Author,
+      type: "list",
+      of: { type: "string" },
+      required: true,
+    },
+  },
+  computedFields,
 }))
 
 export const Doc = defineDocumentType(() => ({
@@ -80,9 +120,19 @@ export const Doc = defineDocumentType(() => ({
   computedFields,
 }))
 
+const customTheme = JSON.parse(
+  fs.readFileSync(
+    path.resolve(process.cwd(), "./lib/themes/dark-moonlight-ii.json")
+  )
+)
+
+const darkTheme = JSON.parse(
+  fs.readFileSync(path.resolve(process.cwd(), "./lib/themes/dark.json"))
+)
+
 export default makeSource({
   contentDirPath: "./content",
-  documentTypes: [Doc],
+  documentTypes: [Doc, Blog],
   mdx: {
     remarkPlugins: [remarkGfm, codeImport],
     rehypePlugins: [
@@ -115,6 +165,25 @@ export default makeSource({
       [
         rehypePrettyCode,
         {
+          theme: {
+            dark: customTheme,
+            light: "material-lighter",
+          },
+          /* onVisitLine(node) {
+            // Prevent lines from collapsing in `display: grid` mode, and allow empty
+            // lines to be copy/pasted
+            if (node.children.length === 0) {
+              node.children = [{ type: "text", value: " " }]
+            }
+          }, */
+          /* onVisitHighlightedLine(node) {
+            node.properties.className.push("line--highlighted")
+          },
+          onVisitHighlightedWord(node) {
+            node.properties.className = ["word--highlighted"]
+          }, */
+        },
+        /* {
           getHighlighter: async () => {
             const theme = await loadTheme(
               path.join(process.cwd(), "/lib/themes/dark.json")
@@ -134,7 +203,7 @@ export default makeSource({
           onVisitHighlightedWord(node) {
             node.properties.className = ["word--highlighted"]
           },
-        },
+        }, */
       ],
       () => (tree) => {
         visit(tree, (node) => {

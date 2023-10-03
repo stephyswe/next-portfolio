@@ -1,0 +1,114 @@
+---
+title: Write React Tests
+description: How to write react tests
+date: "2023-10-01"
+image: /images/blog/blog-post-1.jpg
+authors:
+  - shadcn
+---
+
+## Start By Adding an React app 
+
+`npx create-react-app@latest test-app --template typescript`
+
+```js
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+```js
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+```
+
+> create an folder "components" add Favorite.tsx & FavoriteNumber.test.tsx
+```js
+import React from 'react'
+
+function FavoriteNumber({min = 1, max = 9}) {
+  const [number, setNumber] = React.useState(0)
+  const [numberEntered, setNumberEntered] = React.useState(false)
+  function handleChange(event) {
+    setNumber(Number(event.target.value))
+    setNumberEntered(true)
+  }
+  const isValid = !numberEntered || (number >= min && number <= max)
+  return (
+    <div>
+      <label htmlFor="favorite-number">Favorite Number</label>
+      <input
+        id="favorite-number"
+        type="number"
+        value={number}
+        onChange={handleChange}
+      />
+      {isValid ? null : <div role="alert">The number is invalid</div>}
+    </div>
+  )
+}
+
+export {FavoriteNumber}
+```
+
+```js
+import ReactDOM from 'react-dom'
+import {getQueriesForElement, render, screen} from '@testing-library/react'
+import {FavoriteNumber} from './FavoriteNumber'
+
+// abstraction for test
+function renderTest(ui) {
+  const container = document.createElement('div')
+  ReactDOM.render(ui, container)
+  const queries = getQueriesForElement(container)
+  return {...queries}
+}
+
+test('renders a number input with a label "Favorite Number', () => {
+  render(<FavoriteNumber />)
+  const inputElement = screen.getByLabelText(/favorite number/i)
+  expect(inputElement).toHaveAttribute('type', 'number')
+})
+
+test('renders a number input with a label "Favorite Number using queries', () => {
+  const div = document.createElement('div')
+  ReactDOM.render(<FavoriteNumber />, div)
+  const {getByLabelText} = getQueriesForElement(div)
+  const inputElement = getByLabelText(/favorite number/i)
+  expect(inputElement).toHaveAttribute('type', 'number')
+})
+
+test('renders a number input with a label "Favorite Number using abstraction', () => {
+  const {getByLabelText} = renderTest(<FavoriteNumber />)
+  const inputElement = getByLabelText(/favorite number/i)
+  expect(inputElement).toHaveAttribute('type', 'number')
+})
+```

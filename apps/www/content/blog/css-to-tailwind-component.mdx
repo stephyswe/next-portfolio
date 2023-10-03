@@ -1,0 +1,117 @@
+
+---
+title: Css to Tailwind Package
+description: Refactor CSS Project with a package.
+date: "2023-06-09"
+image: /images/blog/blog-post-1.jpg
+authors:
+  - shadcn
+---
+
+## About
+
+[ui.shadcn.com](https://ui.shadcn.com) is a project by [shadcn](https://shadcn.com).
+
+## Credits
+
+- [Radix UI](https://radix-ui.com) - For the primitives.
+- [Vercel](https://vercel.com) - Where I host all my projects.
+- [Shu Ding](https://shud.in) - The typography style is adapted from his work on Nextra.
+- [Cal](https://cal.com) - Where I copied the styles for the first component: the `Button`.
+- [cmdk](https://cmdk.paco.me) - For the `<Command />` component.
+
+## License
+
+MIT © [shadcn](https://shadcn.com)
+
+Hi,
+
+I been working on a little project to help me refactor my css project to tailwind.
+I have been using tailwind for a while now and I love it. But I have a lot of css projects that
+I want to refactor to tailwind. So I created a little package to help me with that.
+
+run command:
+npm run replace -- --path=src/app/\(site\)/components/section/experience/city
+
+<Diagram name="blog-post-tw-to-css-file-structure" height={385} width={410} alt="Zero." >
+Showing file structure.
+</Diagram>
+
+```js Main.js
+editTailwindCSS
+toTailwindCSS("tailwind.css")
+globFiles(map);
+```
+
+```js edit-tailwind-css.js
+// Read the file
+const data = await fs.readFile(filePath, "utf8");
+await fs.writeFile(filePath, result, "utf8");
+```
+
+```js to-tailwind-css.js
+readInterface.on("line", (line) => {
+  // reset mediaEnd state
+  state.mediaEnd = false;
+
+  if (state.prevLine === "  }" && line === "}") {
+    state.mediaQuery = "";
+    state.mediaLine = "";
+    state.mediaEnd = true;
+  }
+
+  // TODO: handles content-[""] can be rewritten.
+  if (line.trim() === `@apply content-[""];`) {
+    line = line.replace(`@apply content-[""];`, `@apply content-[''];`);
+  }
+
+  if (line.startsWith("@media")) {
+    state.mediaLine = line;
+  }
+
+  state.mediaQueryNext = setNextMediaQuery(line);
+
+  if (state.mediaQueryNext) {
+    state.mediaQuery = state.mediaQueryNext;
+    state.mediaQueryNext = "";
+  }
+
+  // Update the state based on whether we're starting or ending a class
+  if (line.trim().startsWith(".")) {
+    state = { ...state, ...handleClassStart(line) };
+
+    // end of media query add noneMediaClass to noneConvertibleClasses
+  } else if (state.mediaEnd && state.noneMediaClasses.length > 0)
+    handleMediaEnd(state);
+  else if (state.insideClass) {
+    state = {
+      ...state,
+      ...handleClassEnd(
+        line,
+        state.currentClass,
+        state.classStyle,
+        state.map,
+        state.nonConvertibleClasses,
+        state.mediaQuery,
+        state.mediaLine,
+        state.noneMediaClasses
+      ),
+    };
+  }
+
+  // Update the previous and current lines
+  state.prevLine = line;
+});
+```
+
+```js
+function setNextMediaQuery(line) {
+  if (line.startsWith("@media")) {
+    const extracted = line.match(/\(([^)]+)\)/);
+    if (extracted && extracted[1]) {
+      return extracted[1].replace("width: ", "[") + "]:";
+    }
+  }
+  return "";
+}
+```

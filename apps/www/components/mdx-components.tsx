@@ -9,6 +9,7 @@ import { NpmCommands } from "types/unist"
 import { Event } from "@/lib/events"
 import { cn } from "@/lib/utils"
 import { useConfig } from "@/hooks/use-config"
+import { Diagram } from "@/components/MDX/diagram"
 import { Callout } from "@/components/callout"
 import { CodeBlockWrapper } from "@/components/code-block-wrapper"
 import { ComponentExample } from "@/components/component-example"
@@ -246,6 +247,7 @@ const components = {
       {...props}
     />
   ),
+  Diagram,
   Image,
   Callout,
   ComponentPreview,

@@ -1,0 +1,83 @@
+---
+title: Fetch with API
+description: greeting loader with api
+---
+
+## Title
+
+<Steps>
+
+### Api setup
+
+```jsx title="api.ts"
+// this is just a fake module to simulate interacting with a server
+
+// simulate the network request time...
+const sleep = (time: any) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, time)
+  })
+
+async function savePost(postData: any) {
+  await sleep(1000)
+  return {data: {post: postData}}
+}
+
+const greetings = ['Hello', 'Hi', 'Hey there', `What's up`, 'Howdy', `G'day`]
+
+async function loadGreeting(subject: any) {
+  return {data: {greeting: `${await fetchRandomGreeting()} ${subject}`}}
+}
+
+async function fetchRandomGreeting() {
+  await sleep(1000)
+  return greetings[Math.floor(Math.random() * greetings.length)]
+}
+
+// a fire-and-forget function to report errors
+// for componentDidCatch
+async function reportError(error: any, type: any) {
+  await sleep(1000)
+  return {success: true}
+}
+
+async function submitForm(form: any) {
+  await sleep(1000)
+  return {success: true}
+}
+
+export {savePost, loadGreeting, reportError, submitForm}
+```
+
+### Component
+
+<ComponentPreview name="test-06-fetch" />
+
+### Test
+
+```js title="components/fetch-with-api.test.jsx"
+import { fireEvent, render, waitFor } from '@testing-library/react'
+import { loadGreeting as mockLoadGreeting } from '../api'
+import GreetingLoader from './fetch-with-api'
+
+jest.mock('../api')
+
+test('loads greetings on click', async () => {
+  const testGreeting = 'TEST_GREETING'
+  mockLoadGreeting.mockResolvedValueOnce({
+    data: { greeting: testGreeting },
+  })
+  const { getByLabelText, getByText } = render(<GreetingLoader />)
+  const nameInput = getByLabelText(/name/i)
+  const loadButton = getByText(/load/i)
+  nameInput.value = 'Mary'
+  fireEvent.click(loadButton)
+  expect(mockLoadGreeting).toHaveBeenCalledWith('Mary')
+  expect(mockLoadGreeting).toHaveBeenCalledTimes(1)
+  await waitFor(() => {
+    expect(getByLabelText(/greeting/i)).toHaveTextContent(testGreeting)
+  })
+})
+```
+
+</Steps>

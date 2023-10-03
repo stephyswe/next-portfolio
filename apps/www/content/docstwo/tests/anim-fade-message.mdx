@@ -1,0 +1,63 @@
+---
+title: Animation Fade Message
+description: A component with react transition group
+---
+
+## Someone
+
+<Steps>
+
+### Presetup
+
+```bash
+npm i react-transition-group@4.4.5
+```
+
+### Component
+
+<ComponentPreview name="test-05-message" />
+
+### Test
+
+```js title="components/anim-with-message.test.jsx"
+import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import HiddenMessage from "./hidden-message";
+
+jest.mock("react-transition-group", () => {
+  return {
+    // eslint-disable-next-line testing-library/no-node-access
+    CSSTransition: (props) => (props.in ? props.children : null),
+  };
+});
+
+test("shows hidden message when toggle is clicked", () => {
+  const myMessage = "Message found";
+  render(<HiddenMessage>{myMessage}</HiddenMessage>);
+  const toggleButton = screen.getByText(/toggle/i);
+  expect(screen.queryByText(myMessage)).not.toBeInTheDocument();
+  act(() => {
+    userEvent.click(toggleButton);
+  });
+  expect(screen.getByText(myMessage)).toBeInTheDocument();
+  act(() => {
+    userEvent.click(toggleButton);
+  });
+  expect(screen.queryByText(myMessage)).not.toBeInTheDocument();
+});
+
+/* test('newer: shows hidden message when toggle is clicked', () => {
+  const myMessage = 'Message found'
+  render(<HiddenMessageNew text={myMessage} />)
+  const toggleButton = screen.getByText(/toggle/i)
+  expect(screen.queryByText(myMessage)).not.toBeInTheDocument()
+  userEvent.click(toggleButton)
+  expect(screen.getByText(myMessage)).toBeInTheDocument()
+  userEvent.click(toggleButton)
+  expect(screen.queryByText(myMessage)).not.toBeInTheDocument()
+})
+ */
+
+```
+
+</Steps>

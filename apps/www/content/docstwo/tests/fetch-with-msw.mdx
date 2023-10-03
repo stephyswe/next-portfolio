@@ -1,0 +1,70 @@
+---
+title: Fetch with MSW
+description: api handling with msw
+---
+
+## Title
+
+<Steps>
+
+## Presetup
+
+```bash
+npm i msw
+npx msw init public/ --save
+```
+
+### Component
+
+<ComponentPreview name="test-07-fetch-msw" />
+
+### Test
+
+```js title="components/fetch-with-msw.test.jsx"
+import "@testing-library/jest-dom";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
+import Fetch from "./fetch-with-msw";
+
+const server = setupServer(
+  rest.get("/greeting", (req, res, ctx) => {
+    return res(ctx.json({ greeting: "hello there" }));
+  })
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+test("loads and displays greeting", async () => {
+  render(<Fetch url="/greeting" />);
+
+  userEvent.click(screen.getByText("Load Greeting"));
+
+  await screen.findByRole("heading");
+
+  expect(screen.getByRole("heading")).toHaveTextContent("hello there");
+  expect(screen.getByRole("button")).toBeDisabled();
+});
+
+test("handles server error", async () => {
+  server.use(
+    rest.get("/greeting", (req, res, ctx) => {
+      return res(ctx.status(500));
+    })
+  );
+
+  render(<Fetch url="/greeting" />);
+  userEvent.click(screen.getByText("Load Greeting"));
+
+  await screen.findByRole("alert");
+
+  expect(screen.getByRole("alert")).toHaveTextContent("Oops, failed to fetch!");
+  expect(screen.getByRole("button")).not.toBeDisabled();
+});
+
+```
+
+</Steps>

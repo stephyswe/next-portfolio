@@ -148,6 +148,26 @@ export const docsTwoConfig: DocsTwoConfig = {
           href: "/docstwo/tests/error-boundary",
           items: [],
         },
+        {
+          title: "Anim Fade Message",
+          href: "/docstwo/tests/anim-fade-message",
+          items: [],
+        },
+        {
+          title: "Fetch with API",
+          href: "/docstwo/tests/fetch-with-api",
+          items: [],
+        },
+        {
+          title: "Fetch with MSW",
+          href: "/docstwo/tests/fetch-with-msw",
+          items: [],
+        },
+        {
+          title: "Form with API",
+          href: "/docstwo/tests/form-with-api",
+          items: [],
+        },
       ],
     },
     {

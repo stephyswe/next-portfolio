@@ -32,6 +32,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".contentlayer/generated"
-  ],
+, "registry/new-york/example/test-07-fetch-msw.jsx"  ],
   "exclude": ["node_modules", "./scripts/build-registry.ts"]
 }

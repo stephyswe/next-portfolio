@@ -77,6 +77,8 @@ export function rehypeComponent() {
       if (node.name === "ComponentPreview") {
         const name = getNodeAttributeByName(node, "name")?.value as string
 
+        // console.log('name', name)
+
         if (!name) {
           return null
         }
@@ -84,6 +86,7 @@ export function rehypeComponent() {
         try {
           for (const style of styles) {
             const component = Index[style.name][name]
+            // console.log("component", component)
             const src = component.files[0]
 
             // Read the source file.

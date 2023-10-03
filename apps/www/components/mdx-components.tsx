@@ -18,6 +18,8 @@ import { ComponentSource } from "@/components/component-source"
 import { CopyButton, CopyNpmCommandButton } from "@/components/copy-button"
 import { FrameworkDocs } from "@/components/framework-docs"
 import { StyleWrapper } from "@/components/style-wrapper"
+import TestDefault from "@/components/tests-default"
+import TestPreview from "@/components/tests-preview"
 import {
   Accordion,
   AccordionContent,
@@ -254,6 +256,8 @@ const components = {
   ComponentExample,
   ComponentSource,
   AspectRatio,
+  TestPreview,
+  TestDefault,
   CodeBlockWrapper: ({ ...props }) => (
     <CodeBlockWrapper className="rounded-md border" {...props} />
   ),

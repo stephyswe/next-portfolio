@@ -20,20 +20,15 @@ import "@testing-library/jest-dom/extend-expect";
 import "jest-axe/extend-expect";
 ```
 
-### Input component & test
+### Component
 
-```js title=" "components/form-with-a11y.test.tsx"
+<ComponentPreview name="test-03-form" />
+
+### Test
+
+```js title="components/form-with-a11y.test.tsx"
 import {render} from '@testing-library/react'
 import {axe} from 'jest-axe'
-
-function AccessibleForm() {
-  return (
-    <form>
-      <label htmlFor="email">Email</label>
-      <input id="email" placeholder="email" />
-    </form>
-  )
-}
 
 test('accessible forms pass axe', async () => {
   const {container} = render(<AccessibleForm />)

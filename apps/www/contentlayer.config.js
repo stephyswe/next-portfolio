@@ -80,6 +80,46 @@ export const Blog = defineDocumentType(() => ({
   computedFields,
 }))
 
+export const DocTwo = defineDocumentType(() => ({
+  name: "DocTwo",
+  filePathPattern: `docstwo/**/*.mdx`,
+  contentType: "mdx",
+  fields: {
+    title: {
+      type: "string",
+      required: true,
+    },
+    description: {
+      type: "string",
+      required: true,
+    },
+    published: {
+      type: "boolean",
+      default: true,
+    },
+    radix: {
+      type: "nested",
+      of: RadixProperties,
+    },
+    featured: {
+      type: "boolean",
+      default: false,
+      required: false,
+    },
+    component: {
+      type: "boolean",
+      default: false,
+      required: false,
+    },
+    toc: {
+      type: "boolean",
+      default: true,
+      required: false,
+    },
+  },
+  computedFields,
+}))
+
 export const Doc = defineDocumentType(() => ({
   name: "Doc",
   filePathPattern: `docs/**/*.mdx`,
@@ -132,7 +172,7 @@ const darkTheme = JSON.parse(
 
 export default makeSource({
   contentDirPath: "./content",
-  documentTypes: [Doc, Blog],
+  documentTypes: [Doc, DocTwo, Blog],
   mdx: {
     remarkPlugins: [remarkGfm, codeImport],
     rehypePlugins: [

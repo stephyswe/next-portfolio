@@ -19,7 +19,7 @@
 }
 
 [data-rehype-pretty-code-fragment] code {
-  @apply grid min-w-full break-words rounded-none border-0 bg-transparent p-0;
+  @apply grid min-w-full pl-4 break-words bg-transparent border-0 rounded-none;
   counter-reset: line;
   box-decoration-break: clone;
 }
@@ -33,7 +33,7 @@
 }
 
 [data-rehype-pretty-code-fragment] [data-line-numbers] > .line::before {
-  @apply text-zinc-50/40 text-xs;
+  @apply text-xs text-zinc-50/40;
   counter-increment: line;
   content: counter(line);
   display: inline-block;
@@ -51,7 +51,7 @@
 }
 
 [data-rehype-pretty-code-fragment] .word--highlighted {
-  @apply rounded-md bg-zinc-700/50 border-zinc-700/70 p-1;
+  @apply p-1 rounded-md bg-zinc-700/50 border-zinc-700/70;
 }
 
 .dark [data-rehype-pretty-code-fragment] .word--highlighted {
@@ -59,7 +59,7 @@
 }
 
 [data-rehype-pretty-code-title] {
-  @apply mt-2 pt-6 px-4 text-sm font-medium;
+  @apply px-4 pt-6 mt-2 text-sm font-medium;
 }
 
 [data-rehype-pretty-code-title] + pre {

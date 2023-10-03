@@ -1,0 +1,59 @@
+---
+title: App Test
+description: A simple test automated by CRA.
+---
+
+## Start By Adding an React app
+
+<Steps>
+
+### Create an react app with CRA
+
+```bash
+npx create-react-app@latest test-app --template typescript
+```
+
+### Component
+
+```js title="app.tsx"
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### Testing component
+
+```js title="app.test.tsx"
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+```
+
+</Steps>

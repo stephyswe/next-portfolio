@@ -1,0 +1,143 @@
+---
+title: Error Boundary
+description: error boundary with api test
+---
+
+## Error Boundary Test
+
+<Steps>
+
+### Api setup
+
+```jsx title="api.ts"
+// this is just a fake module to simulate interacting with a server
+
+// simulate the network request time...
+const sleep = (time: any) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, time)
+  })
+
+async function savePost(postData: any) {
+  await sleep(1000)
+  return {data: {post: postData}}
+}
+
+const greetings = ['Hello', 'Hi', 'Hey there', `What's up`, 'Howdy', `G'day`]
+
+async function loadGreeting(subject: any) {
+  return {data: {greeting: `${await fetchRandomGreeting()} ${subject}`}}
+}
+
+async function fetchRandomGreeting() {
+  await sleep(1000)
+  return greetings[Math.floor(Math.random() * greetings.length)]
+}
+
+// a fire-and-forget function to report errors
+// for componentDidCatch
+async function reportError(error: any, type: any) {
+  await sleep(1000)
+  return {success: true}
+}
+
+async function submitForm(form: any) {
+  await sleep(1000)
+  return {success: true}
+}
+
+export {savePost, loadGreeting, reportError, submitForm}
+```
+
+### Component
+
+```js title="utils/error-boundary.tsx"
+import React from "react";
+import { reportError } from "../api";
+
+class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+  componentDidCatch(error, info) {
+    this.setState({ hasError: true });
+    reportError(error, info);
+  }
+  tryAgain = () => this.setState({ hasError: false });
+  render() {
+    return this.state.hasError ? (
+      <div>
+        <div role="alert">There was a problem.</div>{" "}
+        <button onClick={this.tryAgain}>Try again?</button>
+      </div>
+    ) : (
+      this.props.children
+    );
+  }
+}
+
+export { ErrorBoundary };
+```
+
+### Test
+
+```js title="utils/error-boundary.test.tsx"
+import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { reportError as mockReportError } from "../api";
+import { ErrorBoundary } from "./error-boundary";
+
+jest.mock("../api");
+
+beforeAll(() => {
+  jest.spyOn(console, "error").mockImplementation(() => {});
+});
+
+afterAll(() => {
+  console.error.mockRestore();
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+function Issue({ shouldThrow }) {
+  if (shouldThrow) {
+    throw new Error("💣");
+  } else {
+    return null;
+  }
+}
+
+test("calls reportError and renders that there was a problem", () => {
+  mockReportError.mockResolvedValueOnce({ success: true });
+  const { rerender } = render(<Issue />, { wrapper: ErrorBoundary });
+
+  rerender(<Issue shouldThrow={true} />);
+
+  const error = expect.any(Error);
+  const info = { componentStack: expect.stringContaining("Issue") };
+  expect(mockReportError).toHaveBeenCalledWith(error, info);
+  expect(mockReportError).toHaveBeenCalledTimes(1);
+
+  expect(console.error).toHaveBeenCalledTimes(3);
+
+  expect(screen.getByRole("alert").textContent).toMatchInlineSnapshot(
+    `"There was a problem."`
+  );
+
+  console.error.mockClear();
+  mockReportError.mockClear();
+
+  rerender(<Issue />);
+
+  act(() => {
+    userEvent.click(screen.getByText(/try again/i));
+  });
+
+  expect(mockReportError).not.toHaveBeenCalled();
+  expect(console.error).not.toHaveBeenCalled();
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(screen.queryByText(/try again/i)).not.toBeInTheDocument();
+});
+```
+
+</Steps>

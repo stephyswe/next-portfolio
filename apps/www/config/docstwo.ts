@@ -121,6 +121,36 @@ export const docsTwoConfig: DocsTwoConfig = {
       ],
     },
     {
+      title: "Tests",
+      items: [
+        {
+          title: "App Test",
+          href: "/docstwo/tests/app",
+          items: [],
+        },
+        {
+          title: "Input with props",
+          href: "/docstwo/tests/input-with-props",
+          items: [],
+        },
+        {
+          title: "Form with a11y",
+          href: "/docstwo/tests/form-with-a11y",
+          items: [],
+        },
+        {
+          title: "Theming (test)",
+          href: "/docstwo/tests/theming",
+          items: [],
+        },
+        {
+          title: "Error boundary",
+          href: "/docstwo/tests/error-boundary",
+          items: [],
+        },
+      ],
+    },
+    {
       title: "Components",
       items: [
         {

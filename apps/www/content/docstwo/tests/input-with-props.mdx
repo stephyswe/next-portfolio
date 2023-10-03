@@ -1,0 +1,106 @@
+---
+title: Input with Props
+description: A test with input
+---
+
+## Testing an input component with Props
+
+<Steps>
+
+### Component
+
+```js title="components/input-with-props.tsx"
+import { ChangeEvent, useState } from "react";
+
+type Props = {
+  min: number;
+  max: number;
+};
+
+FavoriteNumber.defaultProps = {
+  min: 1,
+  max: 9,
+};
+
+export function FavoriteNumber({ min, max }: Props) {
+  const [number, setNumber] = useState(0);
+  const [numberEntered, setNumberEntered] = useState(false);
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    setNumber(Number(event.target.value));
+    setNumberEntered(true);
+  }
+  const isValid = !numberEntered || (number >= min && number <= max);
+  return (
+    <div>
+      <label htmlFor="favorite-number">Favorite Number</label>
+      <input
+        id="favorite-number"
+        type="number"
+        value={number}
+        onChange={handleChange}
+      />
+      {isValid ? null : <div role="alert">The number is invalid</div>}
+    </div>
+  );
+}
+```
+
+### Test
+
+```js title="components/input-with-props.test.tsx"
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { FavoriteNumber } from "./input-with-props";
+
+afterEach(() => cleanup());
+
+test('renders a number input with a label "Favorite Number', () => {
+  render(<FavoriteNumber />);
+  const inputElement = screen.getByLabelText(/favorite number/i);
+  expect(inputElement).toHaveAttribute("type", "number");
+});
+
+test("debug an input", () => {
+  render(<FavoriteNumber />);
+  //const inputElement = screen.getByLabelText(/favorite number/i)
+  //screen.debug(inputElement)
+});
+
+test("fireEvent: entering an invalid value shows an error message", () => {
+  render(<FavoriteNumber />);
+  act(() => {
+    fireEvent.change(screen.getByLabelText(/favorite number/i), {
+      target: { value: "10" },
+    });
+  });
+  expect(screen.getByRole("alert")).toHaveTextContent(/the number is invalid/i);
+});
+
+test("userEvent: entering an invalid value shows an error message", () => {
+  render(<FavoriteNumber />);
+  const inputElement = screen.getByLabelText(/favorite number/i);
+  act(() => {
+    userEvent.type(inputElement, "10");
+  });
+  expect(screen.getByRole("alert")).toHaveTextContent(/the number is invalid/i);
+});
+
+test("renders prop updates on input element", () => {
+  const { rerender } = render(<FavoriteNumber />);
+  const inputElement = screen.getByLabelText(/favorite number/i);
+  act(() => {
+    userEvent.type(inputElement, "10");
+  });
+  expect(screen.getByRole("alert")).toBeInTheDocument();
+  rerender(<FavoriteNumber max={10} />);
+  expect(screen.queryByRole("alert")).toBeNull();
+});
+```
+
+</Steps>
